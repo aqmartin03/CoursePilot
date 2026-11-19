@@ -1,7 +1,11 @@
 
 
-
 .error-message {
     color: red;
+    font-weight: bold;
+}
+
+.priority-badge {
+    color: darkgreen;
     font-weight: bold;
 }

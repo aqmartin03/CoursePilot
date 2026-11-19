@@ -27,6 +27,9 @@
         <ul id="assignment-list">
             {% for assignment in assignments %}
                 <li data-completed="{{ assignment[5] }}">
+                    {% if loop.first and not assignment[5] %}
+                        <p class="priority-badge">Recommended next</p>
+                        {% endif %}
                     <!-- Title -->
                     {{ assignment[0] }} -
                     <!-- Course code -->
@@ -37,6 +40,7 @@
                     Estimated hours: {{ assignment[3] }}
                     <!-- Importance -->
                     Importance: {{ assignment[4] }}
+                    Priority: {{ assignment[7] }}
                     {% if assignment[5] %}
                         <p>Completed</p>
                     {% else %}

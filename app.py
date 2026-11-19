@@ -38,6 +38,26 @@ def get_assignments(connection):
     """)
     return cursor.fetchall()
 
+def calculate_priority(due_date, importance, today=None):
+    if today is None:
+        today = datetime.today().date()
+
+    due = datetime.strptime(due_date, "%Y-%m-%d").date()
+    days_until_due = (due - today).days
+
+    if days_until_due <= 0:
+        urgency_score = 10
+    elif days_until_due <= 3:
+        urgency_score = 7
+    elif days_until_due <= 7:
+        urgency_score = 4
+    else:
+        urgency_score = 1
+
+    importance_score = int(importance) * 2
+
+    return urgency_score + importance_score
+
 @app.route("/api/assignments", methods=["GET", "POST"])
 def api_assignments():
     connection = sqlite3.connect("coursepilot.db")
@@ -242,6 +262,21 @@ def home():
     courses = get_courses(connection)
     semesters = get_semesters(connection)
     assignments = get_assignments(connection)
+
+    assignments = [
+        assignment + (
+            calculate_priority(assignment[1], assignment[4]),
+        )
+        for assignment in assignments
+    ]
+
+    assignments.sort(
+        key=lambda assignment: (
+            not assignment[5],
+            assignment[7]
+        ),
+        reverse=True
+    )
 
     connection.close()
 
