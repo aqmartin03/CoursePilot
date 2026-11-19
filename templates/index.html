@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoursePilot - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
 <body>
     <h1>Welcome to {{ name }}!</h1>
@@ -12,12 +14,83 @@
     <h2>My Courses</h2>
     <ul>
         {% for course in courses %}
-            <li>{{ course[0] }} - {{ course[1] }}</li>
+            <li>{{ course[1] }} - {{ course[2] }}</li>
         {% endfor %}
     </ul>
+    <h2>My Assignments</h2>
+    <div id="assignment-filters">
+        <button type="button" data-filter="all">All</button>
+        <button type="button" data-filter="incomplete">Incomplete</button>
+        <button type="button" data-filter="completed">Completed</button>
+    </div>
+    {% if assignments %}
+        <ul id="assignment-list">
+            {% for assignment in assignments %}
+                <li data-completed="{{ assignment[5] }}">
+                    <!-- Title -->
+                    {{ assignment[0] }} -
+                    <!-- Course code -->
+                    {{ assignment[2] }} -
+                    <!-- Due date -->
+                    Due: {{ assignment[1] }} -
+                    <!-- Estimated hours -->
+                    Estimated hours: {{ assignment[3] }}
+                    <!-- Importance -->
+                    Importance: {{ assignment[4] }}
+                    {% if assignment[5] %}
+                        <p>Completed</p>
+                    {% else %}
+                        <p>Incomplete</p>
+                    {% endif %}
+                    <form method="POST">
+                        <input type="hidden" name="assignment_id" value="{{ assignment[6] }}">
+                        <button type="submit" name="action" value="toggle_assignment">
+                            {% if assignment[5] %}
+                                Mark Incomplete
+                            {% else %}
+                                Mark Completed
+                            {% endif %}
+                        </button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No assignments yet.</p>
+    {% endif %}
+    <h2>Add an Assignment</h2>
+    {% if assignment_error %}
+        <p class="error-message">{{ assignment_error }}</p>
+    {% endif %}
+    <form id="assignment-form">
+        <label for="assignment_title">Assignment Title:</label>
+        <input type="text" id="assignment_title" name="assignment_title" required>
+
+        <label for="assignment_due_date">Due Date:</label>
+        <input type="date" id="assignment_due_date" name="assignment_due_date" required>
+
+        <label for="assignment_course_id">Course:</label>
+        <select id="assignment_course_id" name="assignment_course_id" required>
+            {% for course in courses %}
+                <option value="{{ course[0] }}">{{ course[1] }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="estimated_hours">Estimated Hours:</label>
+        <input type="number" id="estimated_hours" name="estimated_hours"
+            min="0.1" step="0.1" required>
+
+        <label for="importance">Importance:</label>
+        <input type="number" id="importance" name="importance"
+            min="1" max="5" required>
+
+        <button type="submit" name="action" value="add_assignment">
+            Add Assignment
+        </button>
+    </form>
     <h2>Add a Course</h2>
-    {% if error_message %}
-        <p>{{ error_message }}</p>
+    {% if course_error %}
+        <p class="error-message">{{ course_error }}</p>
     {% endif %}
     <form method="POST">
         <label for="course_code">Course Code:</label>
@@ -32,7 +105,27 @@
                 <option value="{{ semester[0] }}">{{ semester[1] }}</option>
             {% endfor %}
         </select>
-        <button type="submit">Add Course</button>
+        <button type="submit" name="action" value="add_course">
+            Add Course
+        </button>
+    </form>
+    <h2>Add a Semester</h2>
+    {% if semester_error %}
+        <p class="error-message">{{ semester_error }}</p>
+    {% endif %}
+    <form method="POST">
+        <label for="semester_name">Semester Name:</label>
+        <input type="text" id="semester_name" name="semester_name" required>
+
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" required>
+
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" required>
+
+        <button type="submit" name="action" value="add_semester">
+            Add Semester
+        </button>
     </form>
 </body>
 </html>

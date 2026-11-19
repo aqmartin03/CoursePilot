@@ -20,12 +20,22 @@ This project gives me hands-on experience with relational databases, backend dev
 
 ## Current Features
 
-- Display courses and their associated semesters.
-- Add new courses through a web form.
-- Store course information in a SQLite database.
-- Dynamically populate semester options from the database.
-- Validate course codes, names, and semester IDs.
-- Display error messages for invalid submissions.
+- Create and view semesters.
+- Create and view courses.
+- Add assignments connected to courses.
+- Validate assignment titles, due dates, course IDs, estimated hours, and importance.
+- Mark assignments as complete or incomplete.
+- Filter assignments by all, completed, or incomplete.
+- Use JavaScript to submit assignments through the Flask API.
+- Store application data in SQLite.
+- Return assignment data through a JSON API.
+
+## Testing
+
+Run the automated API tests with:
+
+```bash
+.venv/bin/python -m unittest -v test_api.py
 
 ## Technologies Used
 
